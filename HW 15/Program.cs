@@ -1,4 +1,4 @@
-﻿using Exercise.H15;
+using Exercise.H15;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
