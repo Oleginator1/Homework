@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
@@ -21,7 +21,8 @@ namespace Exercise.H15
 
         public override string ToString()
         {
-            return $"{Date:G} | {Type,-10} | {Amount:0.00}";
+            string status = Type.StartsWith("Failed") ? "[FAILED]" : "[SUCCESSFUL]";
+            return $"{Date:G} | {Type,-15} | {Amount,10:0.00} {status}";
         }
     }
 
@@ -81,8 +82,11 @@ namespace Exercise.H15
 
         public bool Deposit(string PIN, decimal amount)
         {
-            if (PIN != this.PIN) return false;
-            if (amount <= 0) return false;
+            if (PIN != this.PIN || amount <= 0)
+            {
+                transactionHistory.Add(new Transaction(amount, "FailedDeposit"));
+                return false;
+            }
 
             Balance += amount;
             transactionHistory.Add(new Transaction(amount, "Deposit"));
@@ -91,8 +95,11 @@ namespace Exercise.H15
 
         public bool Withdrawal(string PIN, decimal amount)
         {
-            if (PIN != this.PIN) return false;
-            if (amount <= 0 || amount > Balance) return false;
+            if (PIN != this.PIN || amount <= 0 || amount > Balance)
+            {
+                transactionHistory.Add(new Transaction(-amount, "FailedWithdrawal"));
+                return false;
+            }
 
             Balance -= amount;
             transactionHistory.Add(new Transaction(-amount, "Deposit"));
